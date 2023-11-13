@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competition</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    input {
+      padding: 8px;
+      margin: 5px;
+    }
+    #submitBtn {
+      padding: 10px;
+      cursor: pointer;
+    }
+    #error-message {
+      color: red;
+    }
+    #congratulationsMessage {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+      display: none; /* Initially hidden */
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Competition</h2>
+
+  <form id="myForm">
+    <label for="inputField">Please enter the promo code:</label>
+    <input type="text" id="inputField" name="inputField" oninput="validateInput()">
+    <br>
+    <span id="error-message"></span>
+    <br>
+    <input type="button" value="Submit" id="submitBtn" onclick="submitForm()">
+    <div id="loadingMessage" style="display:none;">Processing...</div>
+    <div id="congratulationsMessage"></div>
+  </form>
+
+  <script>
+    function validateInput() {
+      var inputField = document.getElementById('inputField');
+      var errorMessage = document.getElementById('error-message');
+      var submitBtn = document.getElementById('submitBtn');
+      var loadingMessage = document.getElementById('loadingMessage');
+      var congratulationsMessage = document.getElementById('congratulationsMessage');
+      var pattern = /^[a-zA-Z0-9]+$/;
+
+      if (!pattern.test(inputField.value)) {
+        errorMessage.textContent = 'Only numbers and alphabetical characters are allowed.';
+        submitBtn.disabled = true;
+        congratulationsMessage.style.display = 'none'; // Hide the message if the input is not valid
+      } else {
+        errorMessage.textContent = '';
+
+        // Check if the entered value is "1234"
+        if (inputField.value === "1234") {
+          submitBtn.style.display = 'none';
+          congratulationsMessage.textContent = 'Congratulations! You won a new car!';
+          congratulationsMessage.style.display = 'block';
+        } else {
+          submitBtn.style.display = 'inline-block';
+          congratulationsMessage.style.display = 'none'; // Hide the message if the input is not "1234"
+        }
+
+        submitBtn.disabled = false;
+      }
+    }
+
+    function submitForm() {
+      var inputField = document.getElementById('inputField').value;
+      var submitBtn = document.getElementById('submitBtn');
+      var loadingMessage = document.getElementById('loadingMessage');
+      var congratulationsMessage = document.getElementById('congratulationsMessage');
+
+      // Simulate processing time
+      loadingMessage.style.display = 'block';
+      submitBtn.disabled = true;
+
+      // Simulate sending data to backend (using JSONPlaceholder)
+      fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify({ promoCode: inputField }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Simulate successful response
+        loadingMessage.style.display = 'none';
+        if (inputField === '1234') {
+          congratulationsMessage.textContent = 'Congratulations! You won a new car!';
+          congratulationsMessage.style.display = 'block';
+        }
+        alert('Form submitted with input: ' + inputField);
+        submitBtn.disabled = false;
+      })
+      .catch(error => {
+        // Simulate error response
+        loadingMessage.style.display = 'none';
+        alert('Error submitting form: ' + error.message);
+        submitBtn.disabled = false;
+      });
+    }
+  </script>
+
+</body>
+</html>
